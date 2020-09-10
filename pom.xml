@@ -2,16 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<properties>
-		<bundle.symbolicName>BridgeDb</bundle.symbolicName>
+		<bundle.symbolicName>org.bridgedb.cytoscape</bundle.symbolicName>
 		<bundle.namespace>org.bridgedb.cytoscape</bundle.namespace>
 		<cytoscape.api.version>3.1.0</cytoscape.api.version>
-		<bridgedb.version>1.1.0</bridgedb.version>
+		<bridgedb.version>2.3.0</bridgedb.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.bridgedb</groupId>
 	<artifactId>bridgedb.cytoscape.app</artifactId>
-	<version>1.1.0.3.snapshot</version>
+	<version>1.2.0</version>
 	<name>BridgeDb</name>
 	<packaging>bundle</packaging>
         
@@ -24,7 +24,6 @@
 				<directory>src/main/lib</directory>
 			</resource>
 		</resources>
-		<!-- Cytoscape requires Java 1.6 -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -47,8 +46,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<optimize>true</optimize>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
@@ -70,7 +69,7 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
+				<version>3.2.0</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
@@ -81,8 +80,13 @@
 						<Bundle-Activator>${bundle.namespace}.internal.BridgeDbApp</Bundle-Activator>
 						<!--<Embed-Dependency>groupId=org.bridgedb;scope=compile|runtime;inline=true</Embed-Dependency>-->
                                                 <!--embed all dependencies except the ones with scpe provided-->
-						<Embed-Dependency>*;scope=!provided;type=!pom;inline=true</Embed-Dependency>
-<Import-Package>javax.crypto,javax.crypto.interfaces,jav
+						<Embed-Dependency>*;scope=!provided</Embed-Dependency>
+						<Embed-Transitive>true</Embed-Transitive>
+						<Import-Package>*;resolution:=optional</Import-Package>
+						<Bundle-Name>BridgeDb</Bundle-Name>
+<!--
+<Embed-Dependency>*;scope=!provided;type=!pom;inline=true</Embed-Dependency>
+ <Import-Package>javax.crypto,javax.crypto.interfaces,jav
  ax.crypto.spec,javax.jws,javax.management,javax.naming,javax.naming.dir
  ectory,javax.naming.spi,javax.net,javax.net.ssl,javax.security.auth,jav
  ax.sql,javax.swing,javax.swing.border,javax.swing.event,javax.swing.pla
@@ -101,6 +105,7 @@
  ,4)",org.cytoscape.work.util;version="[3.1,4)",org.osgi.framework;versi
  on="[1.5,2)",org.slf4j;version="[1.5,2)",org.w3c.dom,org.xml.sax,*;resolution:=optional
                                                 </Import-Package>
+-->
 					</instructions>
 					<archive>
 			        </archive>
@@ -131,7 +136,13 @@
 			<name>Cytoscape Releases</name>
 			<url>http://code.cytoscape.org/nexus/content/repositories/releases/</url>
 		</repository>
-                
+                <repository>
+			<id>apache-repo-releases</id>
+			<url>https://repository.apache.org/content/repositories/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
                 <repository>
                     <id>com.springsource.repository.bundles.release</id>
                     <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
@@ -143,7 +154,7 @@
                     <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
                     <url>http://repository.springsource.com/maven/bundles/external</url>
                 </repository>
-
+		
 <!-- 		<repository> -->
 <!-- 		    <id>repo</id> -->
 <!-- 		    <releases> -->
@@ -203,7 +214,15 @@
 			<version>1.5.2</version>
                         <scope>provided</scope>
 		</dependency>
-
+<!--		<dependency>
+			<groupId>org.bridgedb</groupId>
+			<artifactId>bridgedb</artifactId>
+			<version>2.0.0</version>
+			<optional>true</optional>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/localRepo/org.bridgedb.jar</systemPath>
+		</dependency>
+-->
 		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>org.bridgedb.bio</artifactId>
@@ -225,81 +244,39 @@
 			<version>${bridgedb.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.bridgedb</groupId>
+                        <groupId>org.bridgedb.webservice</groupId>
+                        <artifactId>org.bridgedb.webservice.bridgerest</artifactId>
+                        <version>${bridgedb.version}</version>
+                </dependency>
+		<dependency>
+			<groupId>org.bridgedb.webservice</groupId>
 			<artifactId>org.bridgedb.webservice.biomart</artifactId>
 			<version>${bridgedb.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb.webservice.bridgerest</artifactId>
-			<version>${bridgedb.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.bridgedb</groupId>
+			<groupId>org.bridgedb.webservice</groupId>
 			<artifactId>org.bridgedb.webservice.picr</artifactId>
 			<version>${bridgedb.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.bridgedb</groupId>
+			<groupId>org.bridgedb.webservice</groupId>
 			<artifactId>org.bridgedb.webservice.synergizer</artifactId>
 			<version>${bridgedb.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bridgedb</groupId>
 			<artifactId>synergizer-client</artifactId>
-			<version>${bridgedb.version}</version>
+			<version>1.1.0</version>
+			<optional>true</optional>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/localRepo/synergizer-client-1.1.0.jar</systemPath>
 		</dependency>
-                
                 <dependency>
                     <groupId>org.apache.derby</groupId>
                         <artifactId>derby</artifactId>
                         <version>10.5.3.0_1</version>
                 </dependency>
                 
-                <!--cronos support>
-		<dependency>
-			<groupId>org.bridgedb</groupId>
-			<artifactId>org.bridgedb.webservice.cronos</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-                <dependency>
-                        <groupId>axis</groupId>
-                        <artifactId>axis-ant</artifactId>
-                        <version>1.4</version>
-                </dependency>
-		<dependency>
-			<groupId>org.bridgedb</groupId>
-			<artifactId>jaxrpc</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-                
-                <dependency>
-                        <groupId>org.apache.axis</groupId>
-                        <artifactId>axis</artifactId>
-                        <version>1.4</version>
-                </dependency>
-                
-                <dependency>
-                        <groupId>commons-discovery</groupId>
-                        <artifactId>commons-discovery</artifactId>
-                        <version>0.2</version>
-                </dependency>
-
-                <dependency>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                        <version>1.0.4</version>
-                </dependency>
-
-                <dependency>
-                        <groupId>wsdl4j</groupId>
-                        <artifactId>wsdl4j</artifactId>
-                        <version>1.5.1</version>
-                </dependency>
-                <end of cronos support-->
-
-
-
 	</dependencies>
 
 </project>
